@@ -105,6 +105,29 @@ h3{font-size:clamp(1.4rem,2.2vw,1.9rem)}
 .transition-text{max-width:680px;margin:0 auto;text-align:center;font-family:"Instrument Serif",serif;font-size:clamp(1.5rem,2.6vw,2.1rem);line-height:1.35;color:var(--navy)}
 .transition-text em{color:var(--gold);font-style:italic}
 
+/* ============ ABOUT ============ */
+.about{background:linear-gradient(180deg,var(--cream-2) 0%,#fff 100%);position:relative}
+.about-grid{display:grid;grid-template-columns:1.25fr .85fr;gap:80px;align-items:start}
+.about-copy h2{margin:18px 0 24px}
+.about-copy h2 em{font-style:italic;color:var(--gold);font-family:"Instrument Serif",serif}
+.about-lead{font-size:1.18rem;color:var(--ink);margin-bottom:18px;line-height:1.65}
+.about-copy > p{color:var(--muted);margin-bottom:36px}
+.about-values{display:grid;grid-template-columns:1fr 1fr;gap:28px 32px;margin-bottom:44px}
+.value{position:relative;padding-top:18px;border-top:1px solid rgba(0,31,63,.1)}
+.value-num{font-family:"Instrument Serif",serif;font-size:1.1rem;color:var(--gold);letter-spacing:.1em}
+.value h4{font-family:"Instrument Serif",serif;font-weight:400;font-size:1.35rem;color:var(--navy);margin:8px 0 8px;line-height:1.2}
+.value p{color:var(--muted);font-size:.95rem;line-height:1.55}
+.about-cta{display:flex;gap:14px;flex-wrap:wrap}
+.about-side{position:sticky;top:120px;display:flex;flex-direction:column;gap:24px}
+.about-stats{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(0,31,63,.08);border:1px solid rgba(0,31,63,.08);border-radius:18px;overflow:hidden}
+.stat{background:#fff;padding:30px 26px;display:flex;flex-direction:column;gap:8px}
+.stat strong{font-family:"Instrument Serif",serif;font-size:2.6rem;font-weight:400;color:var(--navy);line-height:1}
+.stat span{color:var(--muted);font-size:.85rem;line-height:1.4}
+.about-quote{background:var(--navy);color:#fff;border-radius:18px;padding:36px 32px;position:relative;overflow:hidden}
+.about-quote::before{content:"\201C";position:absolute;top:-30px;right:18px;font-family:"Instrument Serif",serif;font-size:11rem;color:rgba(212,175,55,.18);line-height:1}
+.about-quote p{font-family:"Instrument Serif",serif;font-size:1.45rem;line-height:1.4;color:#fff;position:relative;z-index:1}
+.about-quote cite{display:block;margin-top:18px;color:var(--gold);font-style:normal;font-size:.85rem;letter-spacing:.18em;text-transform:uppercase;font-family:"Work Sans",sans-serif;font-weight:600}
+
 /* ============ TIKRAR ============ */
 .tikrar{background:var(--navy);color:#fff;position:relative;overflow:hidden}
 .tikrar::before{content:"";position:absolute;top:-200px;right:-200px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(212,175,55,.08),transparent 70%)}
@@ -244,6 +267,9 @@ footer{background:#000a18;color:rgba(255,255,255,.6);padding:80px 0 30px;border-
 @media (max-width:980px){
   .hero-grid{grid-template-columns:1fr;gap:50px}
   .hero-visual img{height:400px}
+  .about-grid{grid-template-columns:1fr;gap:50px}
+  .about-side{position:static}
+  .about-values{grid-template-columns:1fr}
   .problem-grid,.testi-grid,.tracks-grid,.savings{grid-template-columns:1fr}
   .phases{grid-template-columns:repeat(2,1fr)}
   .step-row{grid-template-columns:1fr;gap:20px;padding:36px 0}
