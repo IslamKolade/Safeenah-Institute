@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="csrf-token" content="">
+<title>Set new password — Safeenah Institute</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="/assets/logo-mark.jpg">
+<link rel="stylesheet" href="/auth/auth.css">
+</head>
+<body>
+
+<header class="auth-top">
+  <a href="/index.html" class="auth-brand">
+    <img src="/assets/logo-mark.jpg" alt="">
+    <span>Safeenah<small>Institute</small></span>
+  </a>
+</header>
+
+<main class="auth-wrap">
+  <div class="auth-card" id="card">
+    <h1>Set a new password</h1>
+    <p class="sub">Choose a strong password you don't use elsewhere.</p>
+
+    <form id="resetForm" novalidate>
+      <div class="field">
+        <label for="p1">New password</label>
+        <div class="pw-wrap">
+          <input class="input" type="password" id="p1" required>
+          <button type="button" class="pw-toggle">👁</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="p2">Confirm password</label>
+        <div class="pw-wrap">
+          <input class="input" type="password" id="p2" required>
+          <button type="button" class="pw-toggle">👁</button>
+        </div>
+      </div>
+      <button class="btn-primary" id="submitBtn" type="submit">Update password</button>
+    </form>
+  </div>
+
+  <div class="auth-card" id="success" hidden>
+    <h1>Password updated</h1>
+    <p class="sub">You can now sign in with your new password.</p>
+    <a class="btn-primary" href="/auth/login.html" style="text-decoration:none">Continue to sign in</a>
+  </div>
+</main>
+
+<script src="/config.js"></script>
+<script src="/auth/auth.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const token = new URLSearchParams(location.search).get('token') || '';
+  const form = $('#resetForm'), btn = $('#submitBtn');
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const p1 = $('#p1').value, p2 = $('#p2').value;
+    if (p1.length < 8){ $('#p1').classList.add('err'); return toast('Password must be 8+ characters','err'); }
+    if (p1 !== p2){ $('#p2').classList.add('err'); return toast("Passwords don't match",'err'); }
+    setLoading(btn,true);
+    // POST → /api/auth/reset-password/   (body: { token, password })
+    await mockAsync(900);
+    setLoading(btn,false);
+    $('#card').hidden = true;
+    $('#success').hidden = false;
+  });
+});
+</script>
+</body>
+</html>

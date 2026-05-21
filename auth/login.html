@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="csrf-token" content="">
+<title>Sign in — Safeenah Institute</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="/assets/logo-mark.jpg">
+<link rel="stylesheet" href="/auth/auth.css">
+</head>
+<body>
+
+<header class="auth-top">
+  <a href="/index.html" class="auth-brand">
+    <img src="/assets/logo-mark.jpg" alt="">
+    <span>Safeenah<small>Institute</small></span>
+  </a>
+  <a href="/index.html" class="back">← Back to site</a>
+</header>
+
+<main class="auth-wrap">
+  <div class="auth-card">
+    <h1>Welcome back</h1>
+    <p class="sub">Sign in to your Safeenah student portal.</p>
+
+    <form id="loginForm" novalidate>
+      <div class="field">
+        <label for="email">Email address</label>
+        <input class="input" type="email" id="email" name="email" autocomplete="email" required>
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <div class="pw-wrap">
+          <input class="input" type="password" id="password" name="password" autocomplete="current-password" required>
+          <button type="button" class="pw-toggle" aria-label="Show password">👁</button>
+        </div>
+      </div>
+
+      <div class="between">
+        <span></span>
+        <a href="/auth/forgot.html">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="btn-primary" id="submitBtn">Sign in</button>
+    </form>
+
+    <p class="below">No account yet? <a href="/auth/register.html">Create one</a></p>
+  </div>
+</main>
+
+<!-- OTP MODAL (physically present in this file) -->
+<div class="modal" data-modal="otp" hidden>
+  <div class="modal-card">
+    <button class="modal-close" aria-label="Close">×</button>
+    <h2>Verify it's you</h2>
+    <p class="sub">Code sent to <strong id="otpEmail">your inbox</strong></p>
+    <div class="otp-row">
+      <input class="otp-cell" type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code">
+      <input class="otp-cell" type="text" inputmode="numeric" maxlength="1">
+      <input class="otp-cell" type="text" inputmode="numeric" maxlength="1">
+      <input class="otp-cell" type="text" inputmode="numeric" maxlength="1">
+      <input class="otp-cell" type="text" inputmode="numeric" maxlength="1">
+      <input class="otp-cell" type="text" inputmode="numeric" maxlength="1">
+    </div>
+    <p class="resend">
+      <span class="resend-text">Resend code in 0:59</span>
+      <button type="button" class="resend-btn" hidden>Resend code</button>
+    </p>
+  </div>
+</div>
+
+<script src="/config.js"></script>
+<script src="/auth/auth.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const form = $('#loginForm');
+  const btn = $('#submitBtn');
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const email = $('#email').value.trim();
+    const pw = $('#password').value;
+    $$('input.err', form).forEach(i => i.classList.remove('err'));
+
+    if (!emailValid(email)){ $('#email').classList.add('err'); toast('Enter a valid email','err'); return; }
+    if (pw.length < 6){ $('#password').classList.add('err'); toast('Password too short','err'); return; }
+
+    setLoading(btn, true);
+    // POST → /api/auth/login/
+    await mockAsync(900);
+    setLoading(btn, false);
+
+    safeSet('safeenah_email', email);
+    $('#otpEmail').textContent = maskEmail(email);
+    openModal('otp');
+    startResendCountdown('otp');
+  });
+
+  wireOtp('otp', async (code) => {
+    // POST → /api/auth/verify-otp/
+    await mockAsync(700);
+    safeSet('safeenah_session', '1');
+    safeSet('safeenah_name', safeGet('safeenah_name') || email_to_name(safeGet('safeenah_email')||''));
+    toast('Signed in', 'ok');
+    setTimeout(()=> window.location.href = '/dashboard.html', 350);
+  });
+
+  function email_to_name(e){ return (e.split('@')[0]||'Student').replace(/[\._-]+/g,' ').replace(/\b\w/g,c=>c.toUpperCase()); }
+});
+</script>
+</body>
+</html>

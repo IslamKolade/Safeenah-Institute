@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="csrf-token" content="">
+<title>Forgot password — Safeenah Institute</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="/assets/logo-mark.jpg">
+<link rel="stylesheet" href="/auth/auth.css">
+</head>
+<body>
+
+<header class="auth-top">
+  <a href="/index.html" class="auth-brand">
+    <img src="/assets/logo-mark.jpg" alt="">
+    <span>Safeenah<small>Institute</small></span>
+  </a>
+  <a href="/auth/login.html" class="back">← Back to sign in</a>
+</header>
+
+<main class="auth-wrap">
+  <div class="auth-card" id="card">
+    <h1>Reset your password</h1>
+    <p class="sub">We'll email you a secure reset link.</p>
+
+    <form id="forgotForm" novalidate>
+      <div class="field">
+        <label for="email">Email address</label>
+        <input class="input" type="email" id="email" required>
+      </div>
+      <button class="btn-primary" id="submitBtn" type="submit">Send reset link</button>
+    </form>
+  </div>
+
+  <div class="auth-card" id="success" hidden>
+    <h1>Check your inbox</h1>
+    <p class="sub">We've sent a reset link to <strong id="sentTo"></strong>. The link expires in 30 minutes.</p>
+    <a class="btn-primary" href="/auth/login.html" style="text-decoration:none">Back to sign in</a>
+  </div>
+</main>
+
+<script src="/config.js"></script>
+<script src="/auth/auth.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const form = $('#forgotForm'), btn = $('#submitBtn');
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const email = $('#email').value.trim();
+    if (!emailValid(email)){ $('#email').classList.add('err'); return toast('Enter a valid email','err'); }
+    setLoading(btn,true);
+    // POST → /api/auth/forgot-password/
+    await mockAsync(900);
+    setLoading(btn,false);
+    $('#sentTo').textContent = maskEmail(email);
+    $('#card').hidden = true;
+    $('#success').hidden = false;
+  });
+});
+</script>
+</body>
+</html>

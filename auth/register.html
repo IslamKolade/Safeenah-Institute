@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="csrf-token" content="">
+<title>Create account — Safeenah Institute</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="/assets/logo-mark.jpg">
+<link rel="stylesheet" href="/auth/auth.css">
+</head>
+<body>
+
+<header class="auth-top">
+  <a href="/index.html" class="auth-brand">
+    <img src="/assets/logo-mark.jpg" alt="">
+    <span>Safeenah<small>Institute</small></span>
+  </a>
+  <a href="/index.html" class="back">← Back to site</a>
+</header>
+
+<main class="auth-wrap">
+  <div class="auth-card">
+    <h1>Create your account</h1>
+    <p class="sub">Start your child's journey with the Tikrar retention system.</p>
+
+    <form id="regForm" novalidate>
+      <div class="field">
+        <label for="name">Full name</label>
+        <input class="input" type="text" id="name" required>
+      </div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input class="input" type="email" id="email" autocomplete="email" required>
+      </div>
+
+      <div class="field">
+        <label>Phone</label>
+        <div class="row-2">
+          <select id="cc">
+            <option value="+234">🇳🇬 +234</option>
+            <option value="+1">🇺🇸 +1</option>
+            <option value="+44">🇬🇧 +44</option>
+            <option value="+971">🇦🇪 +971</option>
+            <option value="+966">🇸🇦 +966</option>
+            <option value="+27">🇿🇦 +27</option>
+          </select>
+          <input class="input" type="tel" id="phone" placeholder="Phone number" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <div class="pw-wrap">
+          <input class="input" type="password" id="password" autocomplete="new-password" required>
+          <button type="button" class="pw-toggle" aria-label="Show password">👁</button>
+        </div>
+        <div class="strength" data-level="0"><span></span><span></span><span></span><span></span></div>
+        <div class="strength-label" id="strLbl">Use 8+ characters with a mix of letters & numbers</div>
+      </div>
+
+      <div class="field">
+        <label for="cpassword">Confirm password</label>
+        <div class="pw-wrap">
+          <input class="input" type="password" id="cpassword" required>
+          <button type="button" class="pw-toggle" aria-label="Show password">👁</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Location</label>
+        <div class="row-radio">
+          <label class="radio-pill on"><input type="radio" name="loc" value="ngn" checked> 🇳🇬 Nigeria</label>
+          <label class="radio-pill"><input type="radio" name="loc" value="usd"> 🌍 International</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="track">Track interest</label>
+        <select id="track" required>
+          <option value="">Choose a track…</option>
+          <option value="beginner">Beginner — Qa'idah</option>
+          <option value="tilawah">Tilawah & Tajweed</option>
+          <option value="standard-hifdh">Standard Hifdh</option>
+          <option value="fast-track">Fast-Track Hifdh</option>
+          <option value="murajaah">Muraja'ah & Retention</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn-primary" id="submitBtn">Create account</button>
+    </form>
+
+    <p class="below">Already have an account? <a href="/auth/login.html">Sign in</a></p>
+  </div>
+</main>
+
+<!-- OTP MODAL (physically present in this file) -->
+<div class="modal" data-modal="otp" hidden>
+  <div class="modal-card">
+    <button class="modal-close" aria-label="Close">×</button>
+    <h2>Verify your email</h2>
+    <p class="sub">Code sent to <strong id="otpEmail">your inbox</strong></p>
+    <div class="otp-row">
+      <input class="otp-cell" type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code">
+      <input class="otp-cell" type="text" inputmode="numeric" maxlength="1">
+      <input class="otp-cell" type="text" inputmode="numeric" maxlength="1">
+      <input class="otp-cell" type="text" inputmode="numeric" maxlength="1">
+      <input class="otp-cell" type="text" inputmode="numeric" maxlength="1">
+      <input class="otp-cell" type="text" inputmode="numeric" maxlength="1">
+    </div>
+    <p class="resend">
+      <span class="resend-text">Resend code in 0:59</span>
+      <button type="button" class="resend-btn" hidden>Resend code</button>
+    </p>
+  </div>
+</div>
+
+<script src="/config.js"></script>
+<script src="/auth/auth.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Radio pill highlight + currency
+  $$('input[name="loc"]').forEach(r => {
+    r.addEventListener('change', () => {
+      $$('.radio-pill').forEach(p => p.classList.toggle('on', p.querySelector('input').checked));
+      setCurrency(r.value);
+    });
+  });
+
+  // Password strength
+  const pw = $('#password'), bar = $('.strength'), lbl = $('#strLbl');
+  pw.addEventListener('input', () => {
+    const v = pw.value; let s = 0;
+    if (v.length >= 8) s++;
+    if (/[A-Z]/.test(v)) s++;
+    if (/\d/.test(v)) s++;
+    if (/[^A-Za-z0-9]/.test(v)) s++;
+    bar.dataset.level = String(s);
+    lbl.textContent = ['Too short','Weak','Fair','Good','Strong'][s];
+  });
+
+  const form = $('#regForm'), btn = $('#submitBtn');
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    $$('input.err,select.err', form).forEach(i => i.classList.remove('err'));
+
+    const name = $('#name').value.trim();
+    const email = $('#email').value.trim();
+    const phone = $('#phone').value.trim();
+    const p1 = pw.value, p2 = $('#cpassword').value;
+    const track = $('#track').value;
+
+    if (!name){ $('#name').classList.add('err'); return toast('Enter your full name','err'); }
+    if (!emailValid(email)){ $('#email').classList.add('err'); return toast('Enter a valid email','err'); }
+    if (phone.length < 6){ $('#phone').classList.add('err'); return toast('Enter a valid phone','err'); }
+    if (p1.length < 8){ pw.classList.add('err'); return toast('Password must be 8+ characters','err'); }
+    if (p1 !== p2){ $('#cpassword').classList.add('err'); return toast('Passwords don\'t match','err'); }
+    if (!track){ $('#track').classList.add('err'); return toast('Choose a track','err'); }
+
+    setLoading(btn, true);
+    // POST → /api/auth/register/
+    await mockAsync(950);
+    setLoading(btn, false);
+
+    safeSet('safeenah_email', email);
+    safeSet('safeenah_name', name);
+    safeSet('safeenah_track', track);
+    $('#otpEmail').textContent = maskEmail(email);
+    openModal('otp');
+    startResendCountdown('otp');
+  });
+
+  wireOtp('otp', async (code) => {
+    // POST → /api/auth/verify-email/
+    await mockAsync(700);
+    safeSet('safeenah_session','1');
+    toast('Account created', 'ok');
+    setTimeout(()=> window.location.href = '/dashboard.html', 400);
+  });
+});
+</script>
+</body>
+</html>
