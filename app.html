@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="csrf-token" content="">
+<title>Safeenah Portal — Student Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="assets/logo-mark.jpg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body class="portal">
+
+<!-- ============ TOAST CONTAINER ============ -->
+<div id="toasts" class="toasts" aria-live="polite"></div>
+
+<!-- ============ AUTH SCREEN ============ -->
+<section class="screen screen-auth" data-screen="auth">
+  <div class="auth-wrap">
+    <a href="index.html" class="auth-back">← Back to site</a>
+    <div class="auth-card">
+      <div class="auth-brand">
+        <img src="assets/logo-mark.jpg" alt="Safeenah" width="56" height="56">
+        <div><strong>Safeenah</strong><small>Student Portal</small></div>
+      </div>
+
+      <!-- LOGIN -->
+      <div class="auth-pane" data-pane="login">
+        <h2>Welcome back</h2>
+        <p class="muted">Sign in to continue your Hifdh journey.</p>
+        <form id="loginForm" novalidate>
+          <!-- POST → /api/auth/login/ -->
+          <label>Email
+            <input type="email" name="email" autocomplete="email" required placeholder="you@example.com">
+          </label>
+          <label>Password
+            <span class="pw-wrap">
+              <input type="password" name="password" autocomplete="current-password" required minlength="6">
+              <button type="button" class="pw-toggle" aria-label="Show password">👁</button>
+            </span>
+          </label>
+          <div class="row-between">
+            <label class="check"><input type="checkbox" name="remember"> Remember me</label>
+            <button type="button" class="link" data-goto="forgot">Forgot password?</button>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Sign In <span class="arrow">→</span></button>
+          <p class="auth-switch">No account? <button type="button" class="link" data-goto="signup">Create one</button></p>
+        </form>
+      </div>
+
+      <!-- SIGNUP -->
+      <div class="auth-pane hidden" data-pane="signup">
+        <h2>Create your account</h2>
+        <p class="muted">It takes less than 2 minutes.</p>
+        <form id="signupForm" novalidate>
+          <!-- POST → /api/auth/register/ -->
+          <label>Full name <input type="text" name="name" required minlength="2"></label>
+          <label>Email <input type="email" name="email" autocomplete="email" required></label>
+          <div class="grid-2">
+            <label>Country code
+              <select name="cc">
+                <option value="+234">🇳🇬 +234</option>
+                <option value="+1">🇺🇸 +1</option>
+                <option value="+44">🇬🇧 +44</option>
+                <option value="+971">🇦🇪 +971</option>
+                <option value="+966">🇸🇦 +966</option>
+              </select>
+            </label>
+            <label>Phone <input type="tel" name="phone" required></label>
+          </div>
+          <label>Where are you based?
+            <div class="seg">
+              <label class="seg-opt"><input type="radio" name="location" value="ngn" checked> 🇳🇬 Nigeria</label>
+              <label class="seg-opt"><input type="radio" name="location" value="usd"> 🌍 International</label>
+            </div>
+          </label>
+          <label>Track interest
+            <select name="track" required>
+              <option value="">Select a program…</option>
+              <option value="beginner">Beginner — Qa'idah</option>
+              <option value="tilawah">Tilawah & Tajweed</option>
+              <option value="standard-hifdh">Standard Hifdh</option>
+              <option value="fast-track">Fast-Track Hifdh</option>
+              <option value="murajaah">Muraja'ah & Retention</option>
+            </select>
+          </label>
+          <label>Password
+            <span class="pw-wrap">
+              <input type="password" name="password" id="signupPw" autocomplete="new-password" required minlength="8">
+              <button type="button" class="pw-toggle" aria-label="Show password">👁</button>
+            </span>
+            <div class="pw-strength" id="pwStrength"><span></span><span></span><span></span><span></span><em>Enter a password</em></div>
+          </label>
+          <label>Confirm password
+            <input type="password" name="confirm" autocomplete="new-password" required minlength="8">
+          </label>
+          <button type="submit" class="btn btn-primary btn-block">Create Account <span class="arrow">→</span></button>
+          <p class="auth-switch">Already have one? <button type="button" class="link" data-goto="login">Sign in</button></p>
+        </form>
+      </div>
+
+      <!-- FORGOT -->
+      <div class="auth-pane hidden" data-pane="forgot">
+        <h2>Forgot password?</h2>
+        <p class="muted">We'll send a reset link to your email.</p>
+        <form id="forgotForm" novalidate>
+          <!-- POST → /api/auth/password/forgot/ -->
+          <label>Email <input type="email" name="email" required></label>
+          <button type="submit" class="btn btn-primary btn-block">Send Reset Link</button>
+          <p class="auth-switch"><button type="button" class="link" data-goto="login">← Back to sign in</button></p>
+        </form>
+      </div>
+
+      <!-- RESET (triggered via #reset-password?token=…) -->
+      <div class="auth-pane hidden" data-pane="reset">
+        <h2>Set a new password</h2>
+        <form id="resetForm" novalidate>
+          <!-- POST → /api/auth/password/reset/ -->
+          <label>New password <input type="password" name="password" required minlength="8"></label>
+          <label>Confirm <input type="password" name="confirm" required minlength="8"></label>
+          <button type="submit" class="btn btn-primary btn-block">Reset Password</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ OTP MODAL ============ -->
+<div class="modal" data-modal="otp" hidden>
+  <div class="modal-card otp-card">
+    <button class="modal-close" data-close>×</button>
+    <h3>Verify it's you</h3>
+    <p class="muted">We sent a 6-digit code to <strong id="otpEmail">you@example.com</strong>.</p>
+    <div class="otp-inputs" id="otpInputs">
+      <input maxlength="1" inputmode="numeric" pattern="[0-9]*">
+      <input maxlength="1" inputmode="numeric" pattern="[0-9]*">
+      <input maxlength="1" inputmode="numeric" pattern="[0-9]*">
+      <input maxlength="1" inputmode="numeric" pattern="[0-9]*">
+      <input maxlength="1" inputmode="numeric" pattern="[0-9]*">
+      <input maxlength="1" inputmode="numeric" pattern="[0-9]*">
+    </div>
+    <p class="otp-timer">Resend in <span id="otpCountdown">30</span>s · <button class="link" id="otpResend" disabled>Resend</button></p>
+    <button class="link" id="otpWhatsApp">Send to WhatsApp instead</button>
+  </div>
+</div>
+
+<!-- ============ CHANGE PASSWORD MODAL ============ -->
+<div class="modal" data-modal="changePw" hidden>
+  <div class="modal-card">
+    <button class="modal-close" data-close>×</button>
+    <h3>Change password</h3>
+    <form id="changePwForm">
+      <!-- POST → /api/auth/password/change/ -->
+      <label>Current <input type="password" name="current" required></label>
+      <label>New <input type="password" name="new" required minlength="8"></label>
+      <label>Confirm <input type="password" name="confirm" required minlength="8"></label>
+      <button class="btn btn-primary btn-block">Update password</button>
+    </form>
+  </div>
+</div>
+
+<!-- ============ PAYMENT MODAL (3 steps) ============ -->
+<div class="modal" data-modal="pay" hidden>
+  <div class="modal-card pay-card">
+    <button class="modal-close" data-close>×</button>
+    <div class="pay-steps">
+      <span class="active">1 · Duration</span><span>2 · Summary</span><span>3 · Confirm</span>
+    </div>
+
+    <div class="pay-step" data-step="1">
+      <h3>How many months?</h3>
+      <p class="muted" id="payTrackLabel">—</p>
+      <div class="months-grid" id="monthsGrid"></div>
+      <div class="pay-discount" id="payDiscount"></div>
+      <p class="pay-range muted" id="payRange"></p>
+      <button class="btn btn-primary btn-block" data-pay-next="2">Continue →</button>
+    </div>
+
+    <div class="pay-step hidden" data-step="2">
+      <h3>Order summary</h3>
+      <div class="pay-summary" id="paySummary"></div>
+      <p class="muted pay-note" id="payNote"></p>
+      <div class="pay-actions">
+        <button class="btn btn-outline" data-pay-back="1">← Back</button>
+        <button class="btn btn-primary" data-pay-next="3">Pay now →</button>
+      </div>
+    </div>
+
+    <div class="pay-step hidden" data-step="3">
+      <div class="pay-success">
+        <div class="check-burst">✓</div>
+        <h3>Payment confirmed</h3>
+        <p class="muted" id="paySuccess">Access granted — your class link is now active.</p>
+        <button class="btn btn-primary btn-block" data-close>Back to Dashboard</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SCHOLARSHIP MODAL ============ -->
+<div class="modal" data-modal="scholarship" hidden>
+  <div class="modal-card">
+    <button class="modal-close" data-close>×</button>
+    <h3>Scholarship application</h3>
+    <p class="muted">10–15% of seats reserved for need-based scholarships.</p>
+    <form id="scholarshipForm">
+      <!-- POST → /api/scholarships/apply/ -->
+      <label>Full name <input type="text" required></label>
+      <label>Class of interest
+        <select required>
+          <option value="">Select…</option>
+          <option>Beginner — Qa'idah</option>
+          <option>Tilawah & Tajweed</option>
+          <option>Standard Hifdh</option>
+          <option>Fast-Track</option>
+          <option>Muraja'ah</option>
+        </select>
+      </label>
+      <label>Reason for application <textarea required rows="4"></textarea></label>
+      <label class="check"><input type="checkbox" required> I commit to 95% attendance and monthly progress reviews.</label>
+      <button class="btn btn-primary btn-block">Submit application</button>
+    </form>
+  </div>
+</div>
+
+<!-- ============ LOGOUT CONFIRM ============ -->
+<div class="modal" data-modal="logout" hidden>
+  <div class="modal-card micro">
+    <h3>Log out?</h3>
+    <p class="muted">You'll need to sign in again to access your dashboard.</p>
+    <div class="pay-actions">
+      <button class="btn btn-outline" data-close>Cancel</button>
+      <button class="btn btn-primary" id="confirmLogout">Yes, log out</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ DASHBOARD ============ -->
+<section class="screen screen-dash hidden" data-screen="dash">
+
+  <!-- Top bar -->
+  <header class="topbar">
+    <a href="#home" class="topbar-brand">
+      <img src="assets/logo-mark.jpg" alt="" width="34" height="34">
+      <span>Safeenah</span>
+    </a>
+    <div class="topbar-greet">
+      <small>Assalamu Alaikum,</small>
+      <strong id="userName">Student</strong>
+    </div>
+    <button class="bell" id="bellBtn" aria-label="Notifications">
+      🔔<span class="bell-badge" id="bellBadge">0</span>
+    </button>
+  </header>
+
+  <!-- Announcement -->
+  <div class="announce hidden" id="announce">
+    <span>📢 Ramadan timetable: classes move to 8:30 PM WAT from March 1st.</span>
+    <button id="announceClose" aria-label="Dismiss">×</button>
+  </div>
+
+  <main class="dash-main">
+
+    <!-- HOME TAB -->
+    <section class="tab" data-tab="home">
+      <div class="tab-head">
+        <h1>Today</h1>
+        <p class="muted" id="todayDate"></p>
+      </div>
+
+      <!-- Clock-in card -->
+      <div class="card clock-card" id="clockCard">
+        <div>
+          <small class="eyebrow-sm">Today's class</small>
+          <h3 id="clockClass">Standard Hifdh</h3>
+          <p class="muted">Starts in <strong id="clockCountdown">—</strong> · <span id="clockTime">5:00 PM WAT</span></p>
+        </div>
+        <button class="btn btn-primary" id="clockInBtn" disabled>Clock In</button>
+      </div>
+
+      <h2 class="dash-h">My classes</h2>
+      <div class="class-list" id="enrolledList"></div>
+
+      <h2 class="dash-h">Explore other tracks</h2>
+      <div class="other-tracks" id="otherTracks"></div>
+    </section>
+
+    <!-- PAYMENTS TAB -->
+    <section class="tab hidden" data-tab="payments">
+      <div class="tab-head row-between">
+        <div><h1>Payments</h1><p class="muted">Manage tuition for your enrolled classes.</p></div>
+        <div class="currency-toggle compact">
+          <button data-cur="ngn" class="active">🇳🇬 NGN</button>
+          <button data-cur="usd">🌍 USD</button>
+        </div>
+      </div>
+
+      <div class="card status-card">
+        <div><small class="eyebrow-sm">Enrollment</small><h3>Active · Standard Hifdh</h3><p class="muted">Next due: <strong id="nextDue">—</strong></p></div>
+        <span class="badge badge-ok" id="payStatus">Paid through June 2026</span>
+      </div>
+
+      <div class="card pay-cta">
+        <div><h3>Pay for your class</h3><p class="muted">Lock in a longer plan to unlock discounts.</p></div>
+        <button class="btn btn-primary" id="openPayBtn">Pay now →</button>
+      </div>
+
+      <h2 class="dash-h">Payment history</h2>
+      <div class="history-table">
+        <table>
+          <thead><tr><th>Date</th><th>Class</th><th>Period</th><th>Currency</th><th>Amount</th><th>Status</th></tr></thead>
+          <tbody id="payHistory"></tbody>
+        </table>
+      </div>
+
+      <div class="card scholarship-card">
+        <div><h3>Need a scholarship?</h3><p class="muted">10–15% of seats are reserved for need-based scholarships.</p></div>
+        <button class="btn btn-outline" data-open="scholarship">Apply</button>
+      </div>
+    </section>
+
+    <!-- PROGRESS TAB -->
+    <section class="tab hidden" data-tab="progress">
+      <div class="tab-head"><h1>Your progress</h1><p class="muted">Tikrar — review daily, review deeply, review strategically.</p></div>
+
+      <div class="card journey">
+        <div><small class="eyebrow-sm">Hifdh journey</small><h3>Juz 3 · Page 47</h3></div>
+        <div class="bar"><div class="bar-fill" style="width:10%"></div></div>
+        <p class="muted"><strong>10%</strong> — 3 of 30 Juz completed</p>
+      </div>
+
+      <h2 class="dash-h">Tikrar cycle — today</h2>
+      <div class="tikrar-grid">
+        <div class="tik-card"><span class="phase-num">Sabq Jadid</span><h4>New Lesson</h4><p>Page 48 — Surah Aali Imran</p><span class="badge badge-warn">In progress</span></div>
+        <div class="tik-card"><span class="phase-num">Sabq Qarib</span><h4>Recent Review</h4><p>Pages 40–47 covered</p><span class="badge badge-ok">95% complete</span></div>
+        <div class="tik-card"><span class="phase-num">Sabq Qadeem</span><h4>Old Review</h4><p>Juz 1 reviewed</p><span class="badge badge-ok">92% retention</span></div>
+        <div class="tik-card"><span class="phase-num">Rabt</span><h4>Connection</h4><p>Linked to yesterday's lesson</p><span class="badge badge-ok">Done</span></div>
+      </div>
+
+      <h2 class="dash-h">Monthly progress report</h2>
+      <div class="card report-card">
+        <div class="row-between">
+          <div><small class="eyebrow-sm">Report for</small>
+            <select id="reportMonth"><option>June 2026</option><option>May 2026</option><option>April 2026</option></select>
+          </div>
+          <div class="gauge"><svg viewBox="0 0 100 50"><path d="M5 50 A45 45 0 0 1 95 50" stroke="rgba(0,31,63,.1)" stroke-width="8" fill="none"/><path d="M5 50 A45 45 0 0 1 95 50" stroke="#D4AF37" stroke-width="8" fill="none" stroke-dasharray="141.4" stroke-dashoffset="14"/></svg><strong>94%</strong><small>Retention</small></div>
+        </div>
+        <div class="report-stats">
+          <div><strong>32</strong><span>Pages memorized</span></div>
+          <div><strong>15/16</strong><span>Sessions attended</span></div>
+          <div><strong>3 Juz</strong><span>Reviewed (Muraja'ah)</span></div>
+        </div>
+        <div class="teacher-notes"><h4>Teacher notes</h4><p>"Mashallah — Ahmad's makharij has improved significantly this month. We finished Surah Al-Baqarah review with 96% accuracy. For July, focus on slowing down Madd letters."</p></div>
+        <div class="video-msg">🎬 Teacher video · June 2026 <small>(2:14)</small></div>
+        <div class="milestone"><strong>Next milestone:</strong> Complete Juz 4 by July 30, 2026</div>
+      </div>
+
+      <h2 class="dash-h">Retention history</h2>
+      <div class="card chart-card"><canvas id="retChart" height="160"></canvas></div>
+
+      <h2 class="dash-h">Memorization log</h2>
+      <div class="card log-card">
+        <ul class="memo-log">
+          <li><strong>June 12</strong><span>Aali Imran 1–9</span><em>Juz 3</em></li>
+          <li><strong>June 5</strong><span>Al-Baqarah 282–286</span><em>Juz 3</em></li>
+          <li><strong>May 28</strong><span>Al-Baqarah 254–281</span><em>Juz 3</em></li>
+          <li><strong>May 14</strong><span>Al-Baqarah 142–252</span><em>Juz 2</em></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SCHEDULE TAB -->
+    <section class="tab hidden" data-tab="schedule">
+      <div class="tab-head row-between">
+        <div><h1>Schedule</h1><p class="muted">Mon–Sat · 5:00 PM WAT</p></div>
+        <div class="seg">
+          <button class="seg-opt active" data-view="week">Week</button>
+          <button class="seg-opt" data-view="month">Month</button>
+        </div>
+      </div>
+      <div class="card schedule-card" id="scheduleView"></div>
+      <button class="btn btn-outline" id="exportCal">📅 Export to Google Calendar (.ics)</button>
+      <h2 class="dash-h">Upcoming milestones</h2>
+      <div class="milestones">
+        <div class="card"><small class="eyebrow-sm">Juz target</small><h4>Complete Juz 4</h4><p class="muted">July 30, 2026</p></div>
+        <div class="card"><small class="eyebrow-sm">Next report</small><h4>July report ready</h4><p class="muted">August 1, 2026</p></div>
+        <div class="card"><small class="eyebrow-sm">Next payment</small><h4 data-price-track="standard-hifdh">—</h4><p class="muted" id="nextDueMs">Due July 1, 2026</p></div>
+      </div>
+    </section>
+
+    <!-- PROFILE TAB -->
+    <section class="tab hidden" data-tab="profile">
+      <div class="tab-head"><h1>Profile</h1></div>
+
+      <div class="card profile-card">
+        <div class="avatar">A</div>
+        <div class="profile-fields">
+          <label>Name <input type="text" id="profName" value="Ahmad Abdullahi"></label>
+          <label>Email <input type="email" id="profEmail" value="ahmad@example.com"></label>
+          <label>Phone <input type="tel" id="profPhone" value="+234 800 000 0000"></label>
+          <button class="btn btn-outline" id="saveProfile">Save changes</button>
+        </div>
+      </div>
+
+      <div class="card setting-row" data-open="changePw">
+        <div><strong>Change password</strong><p class="muted">Update your account password.</p></div><span>→</span>
+      </div>
+
+      <div class="card">
+        <strong>Location & currency</strong>
+        <p class="muted">Sets your default currency across the entire portal.</p>
+        <div class="seg" style="margin-top:14px">
+          <label class="seg-opt"><input type="radio" name="loc" value="ngn"> 🇳🇬 Nigeria</label>
+          <label class="seg-opt"><input type="radio" name="loc" value="usd"> 🌍 International</label>
+        </div>
+      </div>
+
+      <div class="card">
+        <strong>Notifications</strong>
+        <p class="muted">Choose what you'd like to be reminded about.</p>
+        <ul class="toggle-list">
+          <li><span>Class reminders</span><label class="switch"><input type="checkbox" checked><i></i></label></li>
+          <li><span>Payment due alerts</span><label class="switch"><input type="checkbox" checked><i></i></label></li>
+          <li><span>Monthly report ready</span><label class="switch"><input type="checkbox" checked><i></i></label></li>
+          <li><span>Announcements</span><label class="switch"><input type="checkbox" checked><i></i></label></li>
+          <li><span>Clock-in window open</span><label class="switch"><input type="checkbox" checked><i></i></label></li>
+        </ul>
+      </div>
+
+      <div class="card cert-empty">
+        <strong>Certificates</strong>
+        <p class="muted">Your certificate will appear here when you complete your track. 🌱</p>
+      </div>
+
+      <div class="card refer-card">
+        <div><strong>Refer a family</strong><p class="muted">Refer someone — it's a Sadaqah Jariyah.</p></div>
+        <div class="refer-link">
+          <input readonly value="https://safeenah.app/r/ahmad-AB12" id="referLink">
+          <button class="btn btn-outline" id="copyRefer">Copy</button>
+        </div>
+      </div>
+
+      <button class="btn btn-outline logout" data-open="logout">Log out</button>
+    </section>
+
+  </main>
+
+  <!-- NOTIFICATIONS PANEL -->
+  <aside class="notif-panel hidden" id="notifPanel">
+    <header><h3>Notifications</h3><div><button class="link" id="markAllRead">Mark all read</button><button class="modal-close" id="closeNotif">×</button></div></header>
+    <ul id="notifList"></ul>
+    <p class="notif-empty hidden" id="notifEmpty">You're all caught up 🌙</p>
+  </aside>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="active" data-tab-go="home"><span class="ico">🏠</span><span>Home</span></button>
+    <button data-tab-go="payments"><span class="ico">💳</span><span>Payments</span></button>
+    <button data-tab-go="progress"><span class="ico">📈</span><span>Progress</span></button>
+    <button data-tab-go="schedule"><span class="ico">🗓</span><span>Schedule</span></button>
+    <button data-tab-go="profile"><span class="ico">👤</span><span>Profile</span></button>
+  </nav>
+
+</section>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
